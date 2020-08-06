@@ -1,95 +1,117 @@
-import React, {useState} from 'react';
-import PageDefault from '../../../components/PageDefault';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import PageDefault from '../../../components/PageDefault';
 import FormField from '../../../components/formField';
 
-function CadastroCategoria(){
-    const [categorias, setCategoria] = useState([]);
-    
-    const valoresIniciais ={
-      nome : '',
-      descricao : '',
-      cor : '',
-    }
-    const [valores, setvalores] = useState(valoresIniciais);
-    function setvalor(chave, valor){
-        setvalores({
-          ...valores,
-          [chave] : valor,
-        });
-    }
+function CadastroCategoria() {
+  const valoresIniciais = {
+    nome: '',
+    descricao: '',
+    cor: '',
+  }
+  const [categorias, setCategorias] = useState([]);
+  const [values, setValues] = useState(valoresIniciais);
 
-    function funcaoHandler(info){
-      const { getAttribute, value } = info.target;
-      setvalor(info.target.getAttribute('name'),
-               info.target.value);
-    }
-    return (
-      <PageDefault>
-          <h1>Cadastro de categoria : {valores.nome}</h1>
 
-        <form onSubmit={function handleSubmit(info){
-          info.preventDefault();
-          setCategoria([
+  function setValue(chave, valor) {
+    // chave: nome, descricao, bla, bli
+    setValues({
+      ...values,
+      [chave]: valor, // nome: 'valor'
+    })
+  }
+
+  function handleChange(infosDoEvento) {
+    setValue(
+      infosDoEvento.target.getAttribute('name'),
+      infosDoEvento.target.value
+    );
+  }
+
+  //vai atualizar o estado do componente
+  //caso o segundo parâmetro (array) estiver vazio, ele atualizará uma única vez, que será na primeira chamada.
+  //Caso não passe um segundo parâmetro, irá atualizar sempre que houver uma mudança de estado. Isso não é bom
+  //Caso especifique algo dentro do array(como uma variável receber valores através de um input), ele atualizará sempre essa condição for verdadeira
+  useEffect(() =>{
+
+    const URL = 'http://localhost:8080/categorias';
+    fetch(URL)
+    .then(async (respostaDoServidor) =>{
+        const resposta = await respostaDoServidor.json();
+        setCategorias([
+          ...resposta,
+        ]);
+    });
+
+    setTimeout(() =>{
+      setCategorias([
+        ...categorias,
+      ]);
+
+    }, 4000)
+  }, []);
+
+  return (
+    <PageDefault>
+      <h1>Cadastro de Categoria: {values.nome}</h1>
+      <form onSubmit={function handleSubmit(infosDoEvento) {
+          infosDoEvento.preventDefault();
+          setCategorias([
             ...categorias,
-            valores
+            values
           ]);
-          setvalor(valoresIniciais)
-        }}>
+
+          setValues(valoresIniciais)
+      }}>
+
         <FormField
-          label=" Nome"
+          label="Nome da Categoria"
           type="text"
-          name="cor"
-          valores={valores}
-          onChange={funcaoHandler}
+          name="nome"
+          value={values.nome}
+          onChange={handleChange}
+        />
+
+        <FormField
+          label="Descrição:"
+          type="????"
+          name="descricao"
+          value={values.descricao}
+          onChange={handleChange}
         />
 
         <FormField
           label="Cor"
           type="color"
           name="cor"
-          valores={valores}
-          onChange={funcaoHandler}
+          value={values.cor}
+          onChange={handleChange}
         />
-          <div>
-        <label>
-            Descrição:
-            <textarea
-              type="text"
-              name="descricao"
-              value={valores.descricao}
-              onChange={ funcaoHandler}/>
-          </label>
-          </div>
-          <div>
-          <label>
-            Cor:
-            <input
-              type="color"
-              name="cor"
-              value={valores.cor}
-              onChange={ funcaoHandler}/>
-          </label>
-          </div>
+        <button>
+          Cadastrar
+        </button>
+      </form>
+      
+      {categorias.length === 0 &&(
+        <div>
+          Loading...
+        </div>
+      )}
+      <ul>
+        {categorias.map((categoria, indice) => {
+          return (
+            <li key={`${categoria.nome}`}>
+              {categoria.nome}
+            </li>
+          )
+        })}
+      </ul>
 
-          <button>Cadastrar</button>
-        </form>
-              <ul>
-                {categorias.map((categoria, indice) =>{
-                  return (
-                    <li key={`${categoria}${indice}`}>
-                      {categoria.nome}
-                    </li>
-                   
-                  )
-                })}
-              </ul>
+      <Link to="/">
+        Ir para home
+      </Link>
+    </PageDefault>
+  );
+}
 
-          <Link to="/">
-              Ir para home
-          </Link>
-      </PageDefault>
-    )
-  }
-
-  export default CadastroCategoria;
+export default CadastroCategoria;

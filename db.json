@@ -1,0 +1,23 @@
+{
+    "categorias":[
+        {
+            "id" : 1,
+            "nome":"Front end" ,
+            "descricao":"Categoria A" ,
+            "cor": "#cbd1ff"
+        },
+        {
+            "id" : 2,
+            "nome":"Front end" ,
+            "descricao":"Categoria B" ,
+            "cor": "#cbd1ff"
+        },
+        {
+            "id" : 3,
+            "nome":"Front end" ,
+            "descricao":"Categoria C" ,
+            "cor": "#cbd1ff"
+        }
+        
+    ]
+}
