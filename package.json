@@ -1,6 +1,9 @@
 {
   "name": "aluraflix",
   "version": "0.1.0",
+  "engines": {
+    "node": "12.x"
+  },
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -23,7 +26,7 @@
     "server:static": "json-server --watch ./src/data/db.json --port 8080",
     "server": "node ./server.js"
   },
-  
+
   "eslintConfig": {
     "extends": "react-app"
   },
